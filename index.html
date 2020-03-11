@@ -1,0 +1,85 @@
+<ul class="test">
+    <li>bleBtcUpdate</li>
+    <li>jj/HS-698-Preview-screen-layout-and-UI</li>
+</ul>
+
+<script>
+//         var listItems = document.querySelectorAll('.test li');
+
+// for (let i = 0; i < listItems.length; i++) {
+//    // alert (listItems[i].textContent);
+//     console.log(listItems[i].textContent);
+// }
+// console.log(listItems.length)
+
+// ==UserScript==
+// @name         New Userscript
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  try to take over the world!
+// @author       You
+// @match        http://localhost:8000/
+// @grant        none
+// @require http://code.jquery.com/jquery-3.4.1.min.js
+// ==/UserScript==
+const enturl = 'https://api.github.azc.ext.hp.com/user/repos'
+const puburl = 'https://api.github.com/repos/arctouch/hp-spark/branches'
+
+
+$(document).ready(function() {
+    'use strict';
+
+    var listItems = document.querySelectorAll('.test li');
+                    for (let j = 0; j < listItems.length; j++) {
+                        console.log(listItems[j].textContent);
+
+                    }
+
+    console.log(listItems.length)
+    var item;
+    //get branches
+    $.ajax({
+        url: puburl,
+        headers: {
+            'Authorization': 'token ' + pubToken
+        },
+        type: "GET",
+        success: function(result){
+            //should only be one repo
+            for(let i = 0; i < result.length; i++) {
+                item = result[i];
+                console.log("Getting commit for: " + item.name);
+                getCommit(item.commit.url, item.name, listItems)
+            }
+        },
+        error: function(error) {
+            console.log(error)
+        }
+    })
+})
+
+function getCommit(commitURL, commitName, listItems) {
+    $.ajax({
+        url: commitURL,
+        headers: {
+            'Authorization': 'token ' + pubToken
+        },
+        type: "GET",
+        success: function(result){
+            console.log(result)
+            for (let j = 0; j < listItems.length; j++) {
+                // alert (listItems[i].textContent);
+                //console.log(listItems[j].textContent + " " + item.name)
+                if(listItems[j].textContent == commitName){
+                    console.log(result.commit.author.name + " broke this build " + listItems[j].innerHTML)
+                    listItems[j].innerHTML = result.commit.author.name + " broke this build " + listItems[j].innerHTML
+                }
+            }
+        },
+        error: function(error) {
+            console.log(error)
+        }
+    })
+}
+</script>
+
